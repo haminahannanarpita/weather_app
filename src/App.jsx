@@ -6,6 +6,7 @@ import { RouterProvider } from "react-router/dom";
 import Home from './pages/Home';
 import AboutUs from './pages/AboutUs';
 import mainLayout from './layouts/mainLayout';
+import Weather from './pages/Weather';
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
       {
         path: "/about-us",
         element: <AboutUs></AboutUs>
+      },
+      {
+        path:"/weather",
+        element: <Weather></Weather>
       }
 
     ]

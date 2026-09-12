@@ -1,29 +1,46 @@
 import { X } from 'lucide-react';
 import { useState } from 'react';
 import { getGeolocation } from '../services/get-geolocation';
-const LocationModal =  ({ onClose }) => {
+import { useNavigate } from 'react-router';
+const LocationModal = ({ onClose }) => {
+    const navigate = useNavigate()
     const [city, setCity] = useState('')
+    const [error, setError] = useState('')
 
-    const handleSubmit = async(e)=>{
+    const goToPage = (location) => {
+        navigate("/weather", { state: { location } })
+    }
+
+    const handleSubmit = async (e) => {
         e.preventDefault()
         const value = city.trim()
         // console.log(value);
-        
+        if(!value){
+            setError("Please enter your city name")
+            return
+        }
+
         try {
-            const result = await getGeolocation(value)
-            console.log(result);
+            const location = await getGeolocation(value)
+            // console.log(result);
+            if (!location) {
+                setError("Geocoding request failed!")
+
+            }
+            goToPage(location)
         } catch (error) {
-            console.log(error);
+            setError(error);
         }
     }
-    const handleGeoLocations =()=>{
-        navigator.geolocation.getCurrentPosition((positions)=>{
-            const {latitude,longitude}=positions.coords
-            console.log({latitude,longitude});
-        },(error)=>{
-            console.log(error);
-        },{
-            timeout:10000
+    const handleGeoLocations = () => {
+        navigator.geolocation.getCurrentPosition((positions) => {
+            const { latitude, longitude } = positions.coords
+            // console.log({latitude,longitude});
+            goToPage({ name: "Your Locations", lat: latitude, lon: longitude })
+        }, (error) => {
+            setError(error)
+        }, {
+            timeout: 10000
         })
     }
 
@@ -37,24 +54,27 @@ const LocationModal =  ({ onClose }) => {
                 <div className='pt-8'>
                     <form onSubmit={handleSubmit} className='space-y-5'>
                         <input
-                         type="text"
-                         value={city}
-                         onChange={(e)=>setCity(e.target.value)}
-                          placeholder='Enter City name ' className='w-full border p-1 rounded-2xl' />
+                            type="text"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
+                            placeholder='Enter City name ' className='w-full border p-1 rounded-2xl' />
                         <div className=''>
                             <button type="submit"
-                               
+
                                 className="text-lg w-full font-medium bg-blue-500 px-5 py-1 rounded-4xl text-gray-100 cursor-pointer hover:scale-105 transition-all delay-300 ">Get Weather</button>
                         </div>
                     </form>
                 </div>
                 <div>
                     <div className='py-1 text-center'>or</div>
-                      <div className=''>
-                            <button type="button"
-                               onClick={handleGeoLocations}
-                                className="text-lg font-medium w-full bg-blue-500 px-5 py-1 rounded-4xl text-gray-100 cursor-pointer hover:scale-105 transition-all delay-300 ">Use My Location</button>
-                        </div>
+                    <div className=''>
+                        <button type="button"
+                            onClick={handleGeoLocations}
+                            className="text-lg font-medium w-full bg-blue-500 px-5 py-1 rounded-4xl text-gray-100 cursor-pointer hover:scale-105 transition-all delay-300 ">Use My Location</button>
+                    </div>
+                    <div className='text-center'>
+                        {error && <p className='text-red-600 text-md font-medium'>{error}</p>}
+                    </div>
                 </div>
 
             </div>
