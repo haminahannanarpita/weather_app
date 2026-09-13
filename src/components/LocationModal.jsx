@@ -52,7 +52,7 @@ const LocationModal = ({ onClose }) => {
 
     return (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-950/60">
-            <div className="p-5 h-[360px] rounded-2xl w-[400px] bg-gray-100 shadow-2xl ">
+            <div className="p-5 h[360px] rounded-2xl w[400px] bg-gray-100 shadow-2xl ">
                 <div className='flex justify-between items-center'>
                     <h2 className="text-xl font-medium text-gray-500">Where are you today?</h2>
                     <button className=' hover:bg-red-600 cursor-pointer' onClick={onClose}><X /></button>
